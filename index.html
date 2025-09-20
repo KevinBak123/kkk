@@ -258,44 +258,49 @@
         }
 
         /* === Styl strony ze skryptami (#scripts) === */
-        .search-container {
-            display: flex;
-            justify-content: center;
+        #publish-toggle-container {
+            display: none;
             margin-bottom: 40px;
+            text-align: center;
         }
-
-        .search-bar {
-            width: 100%;
-            max-width: 700px;
-            position: relative;
-        }
-
-        .search-bar input {
-            width: 100%;
-            padding: 15px 50px 15px 20px;
-            border-radius: 30px;
-            border: 1px solid var(--border-color);
-            background-color: var(--surface-color);
-            color: var(--text-primary);
-            font-size: 1rem;
-        }
-
-        .search-bar button {
-            position: absolute;
-            right: 5px;
-            top: 5px;
-            bottom: 5px;
-            width: 45px;
-            border-radius: 50%;
+        
+        #showScriptFormButton {
+            padding: 15px 30px;
             border: none;
+            border-radius: 8px;
             background-color: var(--primary-accent);
             color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(255, 65, 54, 0.3);
+            transition: all 0.3s ease;
         }
 
-        .search-bar button:hover {
+        #showScriptFormButton:hover {
             background-color: var(--primary-accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 65, 54, 0.5);
+        }
+
+        #addScriptContainer {
+            display: none; /* Ukryty domyślnie, pokazywany przez JS */
+            background: linear-gradient(145deg, #232323, #1a1a1a);
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            border: 2px solid var(--border-color);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+        }
+        
+        #addScriptContainer h2 {
+            margin-top: 0;
+            color: var(--primary-accent);
+            border-bottom: 2px solid var(--primary-accent);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
         }
 
         .scripts-grid {
@@ -327,6 +332,38 @@
 
         .script-card p {
             color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .script-author {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        
+        #noScriptsMessage {
+            grid-column: 1 / -1; /* Rozciąga element na wszystkie kolumny siatki */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 80px 20px;
+            gap: 20px;
+        }
+        
+        #noScriptsMessage i {
+            font-size: 4rem;
+            color: var(--border-color);
+        }
+
+        #noScriptsMessage p {
+            margin: 0;
+            font-size: 1.2rem;
             line-height: 1.6;
         }
 
@@ -407,7 +444,7 @@
             color: var(--text-secondary);
         }
 
-        .form-group input {
+        .form-group input, .form-group textarea {
             width: 100%;
             padding: 12px;
             background-color: #2a2a2a;
@@ -415,9 +452,21 @@
             border-radius: 8px;
             color: var(--text-primary);
             font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 10px rgba(255, 65, 54, 0.5);
+            outline: none;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
         }
 
-        .login-btn {
+        .login-btn, .submit-btn {
             width: 100%;
             padding: 15px;
             border: none;
@@ -427,11 +476,16 @@
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(255, 65, 54, 0.3);
+            transition: all 0.3s ease;
         }
 
-        .login-btn:hover {
+        .login-btn:hover, .submit-btn:hover {
             background-color: var(--primary-accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 65, 54, 0.5);
         }
         
         .error-message {
@@ -685,38 +739,33 @@
 
         <!-- Strona ze Skryptami -->
         <section id="scripts" class="page">
-            <div class="search-container">
-                <div class="search-bar">
-                    <input type="text" placeholder="Wyszukaj skrypt (np. Autofarm, ESP...)">
-                    <button><i class="fa-solid fa-magnifying-glass"></i></button>
-                </div>
+            <!-- Przycisk do pokazywania formularza (widoczny po zalogowaniu) -->
+            <div id="publish-toggle-container">
+                <button id="showScriptFormButton">Opublikuj nowy skrypt</button>
             </div>
-            <div class="scripts-grid">
-                <!-- Przykładowe karty skryptów -->
-                <div class="script-card">
-                    <h3>Ultimate Autofarm & AutoQuest</h3>
-                    <p>Zaawansowany skrypt do automatycznego farmienia i wykonywania zadań w grze "AdventureBlox". W pełni konfigurowalny.</p>
-                </div>
-                <div class="script-card">
-                    <h3>Niewykrywalny ESP & Aimbot</h3>
-                    <p>Zdominuj każdą rundę w "FPS Arena". Precyzyjny aimbot z opcją 'smooth' oraz w pełni konfigurowalny wallhack (ESP).</p>
-                </div>
-                <div class="script-card">
-                    <h3>Generator Waluty Premium</h3>
-                    <p>Skrypt wykorzystujący lukę w komunikacji z serwerem, pozwalając na dodanie waluty premium w "Saga o Magnatach".</p>
-                </div>
-                <div class="script-card">
-                    <h3>Skrypt na Nielimitowane Skoki</h3>
-                    <p>Uniwersalny skrypt, który działa w niemal każdej grze, dając możliwość nielimitowanych skoków w powietrzu.</p>
-                </div>
-                <div class="script-card">
-                    <h3>Edytor Szybkości Postaci (SpeedHack)</h3>
-                    <p>Proste narzędzie pozwalające na modyfikację prędkości poruszania się postaci. Idealne do szybkiej eksploracji mapy.</p>
-                </div>
-                <div class="script-card">
-                    <h3>Auto-Clicker & Makra</h3>
-                    <p>Zaawansowany auto-clicker z możliwością nagrywania i odtwarzania własnych sekwencji kliknięć (makr).</p>
-                </div>
+
+            <!-- Formularz dodawania skryptu (początkowo ukryty) -->
+            <div id="addScriptContainer">
+                <h2>Opublikuj nowy skrypt</h2>
+                <form id="addScriptForm">
+                    <div class="form-group">
+                        <label for="scriptTitle">Tytuł skryptu</label>
+                        <input type="text" id="scriptTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="scriptDescription">Krótki opis</label>
+                        <textarea id="scriptDescription" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="scriptCode">Kod skryptu</label>
+                        <textarea id="scriptCode" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Opublikuj</button>
+                </form>
+            </div>
+            
+            <div class="scripts-grid" id="scriptsGrid">
+                <!-- Skrypty dodane przez użytkowników pojawią się tutaj -->
             </div>
         </section>
 
@@ -784,17 +833,27 @@
             const loginForm = document.getElementById('loginForm');
             const logoutButton = document.getElementById('logoutButton');
             const welcomeMessage = document.getElementById('welcomeMessage');
+            const addScriptContainer = document.getElementById('addScriptContainer');
+            const addScriptForm = document.getElementById('addScriptForm');
+            const scriptsGrid = document.getElementById('scriptsGrid');
+            const publishToggleContainer = document.getElementById('publish-toggle-container');
+            const showScriptFormButton = document.getElementById('showScriptFormButton');
+
+            // --- Cenzura ---
+            const badWords = ['kurwa', 'chuj', 'jebać', 'pierdol', 'suka', 'cipa'];
+            const censorPattern = new RegExp(badWords.join('|'), 'gi');
+
+            function censorText(text) {
+                return text.replace(censorPattern, '****');
+            }
 
             // --- Funkcja do zmiany aktywnej strony ---
             function setActivePage(targetId) {
-                // Aktualizuj aktywny link w nawigacji
                 navItems.forEach(link => {
-                    // Sprawdzamy czy link prowadzi do strony (ma atrybut data-target)
                     if (link.dataset.target) {
                         link.classList.toggle('active', link.dataset.target === targetId);
                     }
                 });
-                // Pokaż odpowiednią stronę
                 pages.forEach(page => {
                     page.classList.toggle('active', page.id === targetId);
                 });
@@ -802,20 +861,21 @@
 
             // --- Logika Logowania i Wylogowywania ---
             function updateLoginState() {
-                // Sprawdzamy localStorage. Dane w localStorage są trwale zapisane w przeglądarce,
-                // więc użytkownik pozostaje zalogowany nawet po jej zamknięciu i ponownym otwarciu.
                 const user = localStorage.getItem('loggedInUser');
                 if (user) {
                     document.body.classList.add('logged-in');
                     welcomeMessage.textContent = `Witaj, ${user}`;
+                    publishToggleContainer.style.display = 'block';
                 } else {
                     document.body.classList.remove('logged-in');
+                    welcomeMessage.textContent = '';
+                    publishToggleContainer.style.display = 'none';
+                    addScriptContainer.style.display = 'none';
                 }
             }
 
             // Przełączanie stron po kliknięciu w nawigacji
             navItems.forEach(item => {
-                // Dodajemy listener tylko do linków które mają data-target
                 if (item.dataset.target) {
                     item.addEventListener('click', function(e) {
                         e.preventDefault();
@@ -824,37 +884,114 @@
                 }
             });
             
-            // Obsługa przycisku wylogowania
             logoutButton.addEventListener('click', (e) => {
                 e.preventDefault();
                 localStorage.removeItem('loggedInUser');
                 updateLoginState();
-                setActivePage('home'); // Wróć na stronę główną
+                setActivePage('home');
+                renderScripts(); // Odśwież widok skryptów
             });
 
-            // Obsługa formularza logowania
             loginForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const username = document.getElementById('username').value;
                 const password = document.getElementById('password').value;
                 const loginError = document.getElementById('loginError');
 
-                // Prosta walidacja hasła
                 if (password.length < 8) {
                     loginError.textContent = 'Hasło musi mieć co najmniej 8 znaków.';
-                    return; // Zatrzymaj dalsze wykonywanie
+                    return;
                 }
                 
-                // Jeśli walidacja się powiedzie
-                loginError.textContent = ''; // Wyczyść błąd
-                if(username) {
-                    // Zapisanie użytkownika w localStorage zapewnia zapamiętanie sesji
+                loginError.textContent = '';
+                if (username) {
                     localStorage.setItem('loggedInUser', username);
                     updateLoginState();
-                    setActivePage('home'); // Przekieruj na stronę główną po zalogowaniu
+                    setActivePage('home');
                     loginForm.reset();
+                    renderScripts(); // Odśwież widok skryptów
                 }
             });
+            
+            // --- Przycisk do pokazywania/ukrywania formularza ---
+            showScriptFormButton.addEventListener('click', () => {
+                const isVisible = addScriptContainer.style.display === 'block';
+                addScriptContainer.style.display = isVisible ? 'none' : 'block';
+                showScriptFormButton.textContent = isVisible ? 'Opublikuj nowy skrypt' : 'Anuluj publikację';
+            });
+
+            // --- Logika dodawania i renderowania skryptów ---
+            function getScripts() {
+                return JSON.parse(localStorage.getItem('userScripts')) || [];
+            }
+
+            function saveScripts(scripts) {
+                localStorage.setItem('userScripts', JSON.stringify(scripts));
+            }
+
+            function renderScripts() {
+                const scripts = getScripts();
+                scriptsGrid.innerHTML = ''; // Wyczyść siatkę
+
+                if (scripts.length === 0) {
+                    scriptsGrid.innerHTML = `
+                        <div id="noScriptsMessage">
+                            <i class="fa-solid fa-ghost"></i>
+                            <p>Wygląda na to, że jest tu pusto...<br>Bądź pierwszy i opublikuj własny skrypt!</p>
+                        </div>`;
+                    return;
+                }
+
+                scripts.forEach(script => {
+                    const card = document.createElement('div');
+                    card.className = 'script-card';
+                    card.innerHTML = `
+                        <h3>${script.title}</h3>
+                        <p>${script.description}</p>
+                        <div class="script-author">Autor: <strong>${script.author}</strong></div>
+                    `;
+                    // Przechowujemy pełne dane w atrybutach data-* do użycia w modalu
+                    card.dataset.title = script.title;
+                    card.dataset.description = script.description;
+                    card.dataset.code = script.code;
+                    card.dataset.author = script.author;
+
+                    card.addEventListener('click', () => openModalWithScript(card.dataset));
+                    scriptsGrid.appendChild(card);
+                });
+            }
+
+            addScriptForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const title = document.getElementById('scriptTitle').value;
+                const description = document.getElementById('scriptDescription').value;
+                const code = document.getElementById('scriptCode').value;
+                const author = localStorage.getItem('loggedInUser');
+
+                if (!author) {
+                    alert("Musisz być zalogowany, aby dodać skrypt.");
+                    return;
+                }
+
+                const censoredTitle = censorText(title);
+
+                const newScript = {
+                    title: censoredTitle,
+                    description,
+                    code,
+                    author
+                };
+
+                const scripts = getScripts();
+                scripts.unshift(newScript); // Dodaj na początek listy
+                saveScripts(scripts);
+
+                renderScripts(); // Przerenderuj listę
+                addScriptForm.reset(); // Wyczyść formularz
+                addScriptContainer.style.display = 'none';
+                showScriptFormButton.textContent = 'Opublikuj nowy skrypt';
+            });
+
 
             // --- Logika do obsługi okna modalnego ---
             const modal = document.getElementById('scriptModal');
@@ -862,122 +999,14 @@
             const modalDescription = document.getElementById('modalDescription');
             const modalCode = document.getElementById('modalCode');
             const closeButton = document.querySelector('.close-button');
-            const scriptCards = document.querySelectorAll('.script-card');
             const copyCodeButton = document.getElementById('copyCodeButton');
 
-            const sourceCodes = [
-                `-- SCRIPT: Ultimate Autofarm & AutoQuest
--- GAME: AdventureBlox
-loadstring(game:HttpGet("https://polishscript.example.com/guilib.lua"))()
-
-local OrionLib = OrionLibrary.new("PS-Autofarm v2.1.5", "Default")
-local MainSection = OrionLib:addSection("Główne Funkcje")
-
-MainSection:addToggle({
-    name = "Włącz Autofarm",
-    flag = "AutofarmEnabled",
-    callback = function(state)
-        _G.AUTOFARM = state
-        while _G.AUTOFARM do
-            print("Farmie potwory...")
-            -- Tutaj logika do znajdowania i atakowania potworów
-            wait(1)
-        end
-    end
-})`,
-                `-- SCRIPT: ESP & Aimbot v1.8 by ShadowHacker
--- GAME: FPS Arena
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local LocalPlayer = Players.LocalPlayer
-
-local ESP = { Enabled = true, Boxes = true }
-local Aimbot = { Enabled = true, FOV = 90 }
-
-RunService.RenderStepped:Connect(function()
-    if ESP.Enabled then
-        for i, v in pairs(Players:GetPlayers()) do
-            if v ~= LocalPlayer then
-                -- Logika rysowania ESP
-            end
-        end
-    end
-end)`,
-                `-- SCRIPT: Generator Waluty v3.0 (DEMO)
--- GAME: Saga o Magnatach
-
--- Prawdziwe generatory walut nie działają po stronie klienta.
--- Ten kod jest jedynie symulacją interfejsu.
-local function sendRequest(username, amount)
-    print("Łączenie z serwerem PolishScript Cloud...")
-    wait(2)
-    print("Wysyłanie pakietu... Proszę czekać.")
-    wait(3)
-    print("Sukces! " .. amount .. " diamentów dodano do konta " .. username)
-end
-
-sendRequest("TwójNick", 10000)`,
-                `-- SCRIPT: Infinite Jump by UniversalScripter
--- GAME: Uniwersalny
-local UserInputService = game:GetService("UserInputService")
-local Player = game:GetService("Players").LocalPlayer
-local enabled = false
-
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if input.KeyCode == Enum.KeyCode.J and not gameProcessed then
-        enabled = not enabled
-        print("Infinite Jump: " .. (enabled and "ON" or "OFF"))
-        Player.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, not enabled)
-    end
-    if enabled and input.KeyCode == Enum.KeyCode.Space then
-        Player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-    end
-end)`,
-                `-- SCRIPT: SpeedHack v2.1
--- GAME: Uniwersalny
-local Player = game:GetService("Players").LocalPlayer
-local Character = Player.Character or Player.CharacterAdded:Wait()
-local Humanoid = Character:WaitForChild("Humanoid")
-
--- Ustawienia
-local NORMAL_SPEED = 16
-local BOOST_SPEED = 100
-local TOGGLE_KEY = Enum.KeyCode.LeftShift
-
-local isBoosted = false
-
-game:GetService("UserInputService").InputBegan:connect(function(input)
-    if input.KeyCode == TOGGLE_KEY then
-        isBoosted = not isBoosted
-        Humanoid.WalkSpeed = isBoosted and BOOST_SPEED or NORMAL_SPEED
-    end
-end)`,
-                `-- SCRIPT: Auto-Clicker & Makra
--- GAME: Uniwersalny
-local mouse = game:GetService("Players").LocalPlayer:GetMouse()
-local clicking = false
-local delay = 0.1 -- sekundy
-
-local function startClicking()
-    clicking = true
-    while clicking do
-        mouse1click()
-        wait(delay)
-    end
-end
-
--- Przycisk do włączenia/wyłączenia
--- np. game:GetService("UserInputService").InputBegan...`
-            ];
-
-            scriptCards.forEach((card, index) => {
-                card.addEventListener('click', () => {
-                    modalTitle.textContent = card.querySelector('h3').textContent;
-                    modalDescription.textContent = card.querySelector('p').textContent;
-                    modalCode.textContent = sourceCodes[index] || "-- Brak kodu źródłowego.";
-                    modal.style.display = 'flex';
-                });
-            });
+            function openModalWithScript(data) {
+                modalTitle.textContent = data.title;
+                modalDescription.textContent = data.description;
+                modalCode.textContent = data.code;
+                modal.style.display = 'flex';
+            }
 
             const closeModal = () => {
                 modal.style.display = 'none';
@@ -1000,7 +1029,6 @@ end
                 document.execCommand('copy');
                 document.body.removeChild(tempTextArea);
 
-                // Informacja zwrotna dla użytkownika
                 const originalIcon = copyCodeButton.innerHTML;
                 copyCodeButton.innerHTML = '<i class="fa-solid fa-check"></i> Skopiowano!';
                 setTimeout(() => {
@@ -1009,10 +1037,12 @@ end
             });
 
 
-            // Sprawdź stan zalogowania przy pierwszym załadowaniu strony
+            // --- Inicjalizacja przy załadowaniu strony ---
             updateLoginState();
+            renderScripts();
         });
     </script>
 
 </body>
 </html>
+
