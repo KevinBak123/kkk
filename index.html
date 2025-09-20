@@ -847,13 +847,27 @@
             const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
             try {
-                const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+                const firebaseConfigStr = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
+                if (!firebaseConfigStr) {
+                    throw new Error("Zmienna konfiguracyjna Firebase (__firebase_config) nie została znaleziona.");
+                }
+                
+                const firebaseConfig = JSON.parse(firebaseConfigStr);
+                if (!firebaseConfig.apiKey) { // Prosta walidacja, czy obiekt nie jest pusty
+                    throw new Error("Konfiguracja Firebase jest niekompletna lub nieprawidłowa.");
+                }
+
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
             } catch (e) {
                 console.error("Błąd inicjalizacji Firebase:", e);
-                document.body.innerHTML = '<h1>Błąd konfiguracji aplikacji. Skontaktuj się z administratorem.</h1>';
+                document.body.innerHTML = `
+                    <div style="text-align: center; padding: 50px; color: white; font-family: sans-serif;">
+                        <h1>Błąd konfiguracji aplikacji</h1>
+                        <p>Nie można połączyć się z bazą danych. Proszę odświeżyć stronę lub skontaktować się z administratorem.</p>
+                        <p style="color: #888; font-size: 0.8em;">Szczegóły błędu: ${e.message}</p>
+                    </div>`;
                 return;
             }
 
