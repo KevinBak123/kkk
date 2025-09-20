@@ -48,6 +48,13 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 10px rgba(255, 65, 54, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(255, 65, 54, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(255, 65, 54, 0.4); }
+        }
+
 
         /* === Nagłówek i nawigacja === */
         .main-header {
@@ -71,6 +78,7 @@
             border: 1px solid var(--border-color);
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
         }
 
         .nav-logo {
@@ -81,7 +89,7 @@
             text-shadow: 0 0 5px var(--primary-accent);
         }
 
-        .nav-links a {
+        .nav-links a, .nav-links span {
             color: var(--text-secondary);
             text-decoration: none;
             padding: 10px 20px;
@@ -89,7 +97,7 @@
             font-weight: 500;
             transition: all 0.3s ease;
         }
-
+        
         .nav-links a:hover {
             color: var(--text-primary);
             background-color: rgba(255, 255, 255, 0.1);
@@ -99,14 +107,36 @@
             color: white;
             background-color: var(--primary-accent);
         }
+        
+        /* Style dla widoku zalogowanego/wylogowanego użytkownika */
+        .logged-in-view {
+            display: none; /* Ukryte domyślnie */
+        }
+        
+        body.logged-in .logged-in-view {
+            display: inline-block; /* Pokazuje elementy dla zalogowanego */
+        }
+
+        body.logged-in .logged-out-view {
+            display: none; /* Ukrywa przycisk logowania */
+        }
+        
+        #welcomeMessage {
+            color: var(--text-primary);
+            cursor: default;
+        }
+        #welcomeMessage:hover {
+             background-color: transparent;
+        }
+
 
         /* === Kontener na przełączane strony === */
         main {
-            padding-top: 120px; /* Aby zawartość nie chowała się pod nawigacją */
+            padding-top: 120px;
         }
 
         .page {
-            display: none; /* Domyślnie wszystkie strony są ukryte */
+            display: none; 
             padding: 20px 40px;
             max-width: 1400px;
             margin: 0 auto;
@@ -114,32 +144,102 @@
         }
 
         .page.active {
-            display: block; /* Pokazuje aktywną stronę */
+            display: block; 
         }
 
         /* === Styl strony głównej (#home) === */
-        #home .hero {
-            text-align: center;
-            padding: 100px 20px;
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 40px;
+            padding: 50px 20px;
+            min-height: 70vh;
         }
 
-        #home .hero h1 {
-            font-size: clamp(3rem, 10vw, 6rem);
+        .hero-text h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
             font-weight: 700;
-            line-height: 1.1;
-            margin: 0;
+            line-height: 1.2;
+            margin: 0 0 20px 0;
             background: linear-gradient(90deg, var(--primary-accent), #ff851b);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        #home .hero p {
-            font-size: 1.5rem;
+        .hero-text p {
+            font-size: 1.2rem;
             color: var(--text-secondary);
-            margin-top: 20px;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
+            max-width: 500px;
+        }
+        
+        /* === Stylizacja GUI na stronie głównej === */
+        .hero-gui {
+            perspective: 1500px;
+        }
+        .gui-window {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            min-height: 400px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.5);
+            transform: rotateY(-15deg) rotateX(5deg);
+            transition: transform 0.5s ease;
+        }
+        .hero-gui:hover .gui-window {
+            transform: rotateY(0deg) rotateX(0deg);
+        }
+
+        .gui-sidebar {
+            width: 150px;
+            padding: 20px;
+            border-right: 1px solid var(--border-color);
+        }
+        .gui-sidebar .menu-item {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        .gui-sidebar .menu-item.active {
+            background-color: var(--primary-accent);
+            color: white;
+            font-weight: 600;
+        }
+
+        .gui-content {
+            padding: 20px;
+            flex-grow: 1;
+        }
+        .gui-category {
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .gui-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .gui-checkbox span {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background-color: #333;
+            border: 1px solid #555;
+            border-radius: 4px;
+            margin-right: 10px;
+            position: relative;
+        }
+        .gui-checkbox.checked span {
+            background-color: var(--primary-accent);
+            border-color: var(--primary-accent);
+            animation: pulse 2s infinite;
+        }
+        .gui-checkbox label {
+            color: var(--text-primary);
         }
 
         /* === Styl strony ze skryptami (#scripts) === */
@@ -258,8 +358,8 @@
             color: var(--text-primary);
         }
 
-        /* === Styl strony Logowania === */
-        .login-container {
+        /* === Styl strony Logowania i Premium === */
+        .placeholder-page {
             max-width: 450px;
             margin: 50px auto;
             padding: 40px;
@@ -267,17 +367,23 @@
             border: 1px solid var(--border-color);
             border-radius: 15px;
             box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+            text-align: center;
         }
 
-        .login-container h2 {
+        .placeholder-page h2 {
             text-align: center;
             color: var(--primary-accent);
             margin-top: 0;
             margin-bottom: 30px;
         }
+        .placeholder-page p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
         
         .form-group {
             margin-bottom: 20px;
+            text-align: left;
         }
 
         .form-group label {
@@ -313,6 +419,13 @@
             background-color: var(--primary-accent-hover);
         }
         
+        .error-message {
+            color: var(--primary-accent);
+            margin-top: 15px;
+            font-weight: 500;
+            min-height: 20px; /* Rezerwuje miejsce, aby formularz nie "skakał" */
+        }
+
         /* === Styl okna modalnego (pop-up) === */
         .modal {
             display: none;
@@ -366,6 +479,99 @@
             max-height: 300px;
             overflow-y: auto;
         }
+
+        /* === Stylizacja responsywna === */
+        @media (max-width: 900px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 60px; /* Zwiększony odstęp gdy elementy są jeden pod drugim */
+            }
+            .hero-text p {
+                margin: 0 auto;
+            }
+            .gui-window {
+                transform: rotateY(0deg) rotateX(5deg); /* Uproszczony efekt na mniejszych ekranach */
+            }
+        }
+
+        @media (max-width: 768px) {
+            /* Zmiany w nawigacji dla mniejszych ekranów */
+            .main-header {
+                top: 10px;
+            }
+            .main-nav {
+                flex-direction: column;
+                border-radius: 25px;
+                padding: 15px;
+                gap: 5px;
+            }
+            .nav-links {
+                display: flex;
+                flex-wrap: wrap; /* Pozwala linkom zawijać się do nowej linii */
+                justify-content: center;
+                gap: 5px;
+            }
+            .nav-links a, .nav-links span {
+                padding: 8px 15px; /* Mniejszy padding w linkach */
+                font-size: 0.9rem;
+            }
+            .nav-logo {
+                padding-bottom: 10px;
+            }
+
+            /* Dopasowanie głównej treści */
+            main {
+                padding-top: 180px; /* Zwiększony padding, bo nawigacja jest wyższa */
+            }
+            .page {
+                padding: 20px 15px;
+            }
+
+            /* Poprawki dla strony społeczności */
+            .social-card {
+                width: 100%;
+                max-width: 300px; /* Zachowujemy maksymalną szerokość */
+                height: 250px; /* Mniejsza wysokość */
+            }
+            
+            /* Poprawki dla modala */
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-text h1 {
+                font-size: clamp(2.2rem, 10vw, 3rem); /* Jeszcze mniejszy tekst na telefonach */
+            }
+            .hero-text p {
+                font-size: 1rem;
+            }
+            main {
+                padding-top: 170px; /* Drobna korekta */
+            }
+            
+            .gui-window {
+                flex-direction: column; /* Układ kolumnowy dla GUI na bardzo małych ekranach */
+            }
+            .gui-sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                display: flex; /* Menu w poziomie */
+                overflow-x: auto; /* Przewijanie menu */
+                padding: 10px;
+            }
+            .gui-sidebar .menu-item {
+                flex-shrink: 0; /* Zapobiega kurczeniu się elementów menu */
+            }
+            
+            .placeholder-page {
+                padding: 25px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -377,7 +583,14 @@
                 <a href="#" class="nav-item active" data-target="home">Strona Główna</a>
                 <a href="#" class="nav-item" data-target="scripts">Skrypty</a>
                 <a href="#" class="nav-item" data-target="forum">Społeczność</a>
-                <a href="#" class="nav-item" data-target="login">Logowanie</a>
+                
+                <!-- Widoczne gdy wylogowany -->
+                <a href="#" class="nav-item logged-out-view" data-target="login">Logowanie</a>
+                
+                <!-- Widoczne gdy zalogowany -->
+                <a href="#" class="nav-item logged-in-view" data-target="premium">Premium</a>
+                <span id="welcomeMessage" class="nav-item logged-in-view"></span>
+                <a href="#" id="logoutButton" class="nav-item logged-in-view">Wyloguj</a>
             </div>
         </nav>
     </header>
@@ -385,9 +598,31 @@
     <main>
         <!-- Strona Główna -->
         <section id="home" class="page active">
-            <div class="hero">
-                <h1>Gotowy, Uruchom, Graj.</h1>
-                <p>Doświadcz największej biblioteki skryptów stworzonej dla polskiej społeczności. Znajdź, udostępnij i zdominuj grę.</p>
+            <div class="hero-grid">
+                <div class="hero-text">
+                    <h1>Gotowy, Uruchom, Graj.</h1>
+                    <p>Doświadcz największej biblioteki skryptów stworzonej dla polskiej społeczności. Znajdź, udostępnij i zdominuj grę.</p>
+                </div>
+                <div class="hero-gui">
+                    <div class="gui-window">
+                        <div class="gui-sidebar">
+                            <div class="menu-item">Changelog</div>
+                            <div class="menu-item active">Main</div>
+                            <div class="menu-item">Visual</div>
+                            <div class="menu-item">Teleport</div>
+                            <div class="menu-item">Settings</div>
+                        </div>
+                        <div class="gui-content">
+                            <div class="gui-category">Kategoria: Usuwanie</div>
+                            <div class="gui-checkbox"><span class="box"></span><label>Auto Usuń Graczy</label></div>
+                            <div class="gui-checkbox"><span class="box"></span><label>Auto Usuń Samochody</label></div>
+                            <div class="gui-category">Kategoria: Dzień</div>
+                            <div class="gui-checkbox checked"><span class="box"></span><label>Ciągły Dzień</label></div>
+                            <div class="gui-category">Kategoria: Spawner</div>
+                            <div class="gui-checkbox checked"><span class="box"></span><label>Spawner AUT GUI</label></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -437,26 +672,35 @@
                 </a>
                 <a href="https://discord.gg/SYNUFq8E" target="_blank" class="social-card discord">
                     <div class="icon"><i class="fa-brands fa-discord"></i></div>
-                    <div class="logo-text">Discord</div>
+                    <div class="logo-text">Serwer</div>
                 </a>
              </div>
         </section>
         
         <!-- Strona Logowania -->
         <section id="login" class="page">
-            <div class="login-container">
+            <div class="placeholder-page">
                 <h2>Zaloguj się</h2>
                 <form id="loginForm">
                     <div class="form-group">
-                        <label for="username">Imię</label>
+                        <label for="username">Nazwa użytkownika</label>
                         <input type="text" id="username" name="username" required>
                     </div>
                     <div class="form-group">
                         <label for="password">Hasło</label>
-                        <input type="password" id="password" name="password" required>
+                        <input type="password" id="password" name="password" required minlength="8">
                     </div>
                     <button type="submit" class="login-btn">Zaloguj</button>
+                    <p id="loginError" class="error-message"></p>
                 </form>
+            </div>
+        </section>
+        
+        <!-- Strona Premium -->
+        <section id="premium" class="page">
+             <div class="placeholder-page">
+                <h2>Strefa Premium</h2>
+                <p>Wkrótce... Specjalne skrypty i unikalne funkcje będą dostępne tutaj wyłącznie dla zalogowanych użytkowników premium.</p>
             </div>
         </section>
     </main>
@@ -475,22 +719,84 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Logika do przełączania zakładek
             const navItems = document.querySelectorAll('.nav-item');
             const pages = document.querySelectorAll('.page');
+            const loginForm = document.getElementById('loginForm');
+            const logoutButton = document.getElementById('logoutButton');
+            const welcomeMessage = document.getElementById('welcomeMessage');
 
-            navItems.forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('data-target');
-                    navItems.forEach(link => link.classList.remove('active'));
-                    pages.forEach(page => page.classList.remove('active'));
-                    this.classList.add('active');
-                    document.getElementById(targetId).classList.add('active');
+            // --- Funkcja do zmiany aktywnej strony ---
+            function setActivePage(targetId) {
+                // Aktualizuj aktywny link w nawigacji
+                navItems.forEach(link => {
+                    // Sprawdzamy czy link prowadzi do strony (ma atrybut data-target)
+                    if (link.dataset.target) {
+                        link.classList.toggle('active', link.dataset.target === targetId);
+                    }
                 });
+                // Pokaż odpowiednią stronę
+                pages.forEach(page => {
+                    page.classList.toggle('active', page.id === targetId);
+                });
+            }
+
+            // --- Logika Logowania i Wylogowywania ---
+            function updateLoginState() {
+                // Sprawdzamy localStorage. Dane w localStorage są trwale zapisane w przeglądarce,
+                // więc użytkownik pozostaje zalogowany nawet po jej zamknięciu i ponownym otwarciu.
+                const user = localStorage.getItem('loggedInUser');
+                if (user) {
+                    document.body.classList.add('logged-in');
+                    welcomeMessage.textContent = `Witaj, ${user}`;
+                } else {
+                    document.body.classList.remove('logged-in');
+                }
+            }
+
+            // Przełączanie stron po kliknięciu w nawigacji
+            navItems.forEach(item => {
+                // Dodajemy listener tylko do linków które mają data-target
+                if (item.dataset.target) {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        setActivePage(this.dataset.target);
+                    });
+                }
+            });
+            
+            // Obsługa przycisku wylogowania
+            logoutButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('loggedInUser');
+                updateLoginState();
+                setActivePage('home'); // Wróć na stronę główną
             });
 
-            // Logika do obsługi okna modalnego
+            // Obsługa formularza logowania
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const loginError = document.getElementById('loginError');
+
+                // Prosta walidacja hasła
+                if (password.length < 8) {
+                    loginError.textContent = 'Hasło musi mieć co najmniej 8 znaków.';
+                    return; // Zatrzymaj dalsze wykonywanie
+                }
+                
+                // Jeśli walidacja się powiedzie
+                loginError.textContent = ''; // Wyczyść błąd
+                if(username) {
+                    // Zapisanie użytkownika w localStorage zapewnia zapamiętanie sesji
+                    localStorage.setItem('loggedInUser', username);
+                    updateLoginState();
+                    setActivePage('home'); // Przekieruj na stronę główną po zalogowaniu
+                    loginForm.reset();
+                }
+            });
+
+            // --- Logika do obsługi okna modalnego ---
             const modal = document.getElementById('scriptModal');
             const modalTitle = document.getElementById('modalTitle');
             const modalDescription = document.getElementById('modalDescription');
@@ -498,7 +804,6 @@
             const closeButton = document.querySelector('.close-button');
             const scriptCards = document.querySelectorAll('.script-card');
 
-            // Przykładowe kody źródłowe
             const sourceCodes = [
                 `loadstring(game:HttpGet("https://polishscript.example.com/guilib.lua"))()\n\n-- Logika do Autofarm...`,
                 `-- ESP & Aimbot v1.8 by ShadowHacker\n\nlocal Player = game:GetService("Players").LocalPlayer\n-- ... reszta kodu`,
@@ -528,17 +833,10 @@
                 }
             });
 
-            // Logika dla formularza logowania (tylko demonstracja)
-            const loginForm = document.getElementById('loginForm');
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const username = document.getElementById('username').value;
-                alert(`Witaj, ${username}! (Funkcja logowania jest w budowie)`);
-                loginForm.reset();
-            });
+            // Sprawdź stan zalogowania przy pierwszym załadowaniu strony
+            updateLoginState();
         });
     </script>
 
 </body>
 </html>
-
