@@ -55,6 +55,21 @@
             100% { box-shadow: 0 0 10px rgba(255, 65, 54, 0.4); }
         }
 
+        .beta-tag {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            background-color: var(--primary-accent);
+            color: white;
+            padding: 5px 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 8px;
+            z-index: 1001; /* Wyżej niż nagłówek */
+            animation: fadeIn 1s ease-out;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
 
         /* === Nagłówek i nawigacja === */
         .main-header {
@@ -467,6 +482,36 @@
         .close-button:hover { color: #fff; }
 
         .modal-content h2 { color: var(--primary-accent); }
+        
+        .modal-code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .modal-code-header h3 {
+            margin: 0;
+        }
+
+        #copyCodeButton {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        #copyCodeButton:hover {
+            background-color: #333;
+            color: var(--text-primary);
+        }
+        
+        #copyCodeButton .fa-check {
+            color: #2ecc40; /* zielony */
+        }
 
         .code-block {
             background: #101010;
@@ -485,13 +530,18 @@
             .hero-grid {
                 grid-template-columns: 1fr;
                 text-align: center;
-                gap: 60px; /* Zwiększony odstęp gdy elementy są jeden pod drugim */
+                gap: 40px; /* Zmniejszony odstęp */
+                padding: 40px 20px;
             }
             .hero-text p {
                 margin: 0 auto;
             }
             .gui-window {
                 transform: rotateY(0deg) rotateX(5deg); /* Uproszczony efekt na mniejszych ekranach */
+            }
+            .beta-tag {
+                top: 15px;
+                right: 15px;
             }
         }
 
@@ -522,7 +572,7 @@
 
             /* Dopasowanie głównej treści */
             main {
-                padding-top: 180px; /* Zwiększony padding, bo nawigacja jest wyższa */
+                padding-top: 170px; /* Zmniejszony padding, aby uniknąć ucinania */
             }
             .page {
                 padding: 20px 15px;
@@ -550,7 +600,12 @@
                 font-size: 1rem;
             }
             main {
-                padding-top: 170px; /* Drobna korekta */
+                padding-top: 160px; /* Drobna korekta */
+            }
+            
+            .hero-grid {
+                min-height: auto; /* Usunięcie minimalnej wysokości na najmniejszych ekranach */
+                padding: 20px;
             }
             
             .gui-window {
@@ -575,6 +630,8 @@
     </style>
 </head>
 <body>
+
+    <div class="beta-tag">Beta</div>
 
     <header class="main-header">
         <nav class="main-nav">
@@ -711,7 +768,10 @@
             <span class="close-button">&times;</span>
             <h2 id="modalTitle"></h2>
             <p id="modalDescription"></p>
-            <h3>Kod źródłowy:</h3>
+            <div class="modal-code-header">
+                <h3>Kod źródłowy:</h3>
+                <button id="copyCodeButton" title="Kopiuj kod"><i class="fa-regular fa-copy"></i></button>
+            </div>
             <pre id="modalCode" class="code-block"></pre>
         </div>
     </div>
@@ -803,21 +863,118 @@
             const modalCode = document.getElementById('modalCode');
             const closeButton = document.querySelector('.close-button');
             const scriptCards = document.querySelectorAll('.script-card');
+            const copyCodeButton = document.getElementById('copyCodeButton');
 
             const sourceCodes = [
-                `loadstring(game:HttpGet("https://polishscript.example.com/guilib.lua"))()\n\n-- Logika do Autofarm...`,
-                `-- ESP & Aimbot v1.8 by ShadowHacker\n\nlocal Player = game:GetService("Players").LocalPlayer\n-- ... reszta kodu`,
-                `-- Generator Waluty v3.0\n\nprint("Łączenie z serwerem PolishScript Cloud...")\n-- ... reszta kodu`,
-                `-- Infinite Jump by UniversalScripter\n\nlocal UserInputService = game:GetService("UserInputService")\n-- ... reszta kodu`,
-                `-- SpeedHack v2.1\n\nlocal walkspeed = 100 -- Ustaw prędkość\n-- ... reszta kodu`,
-                `-- Auto-Clicker & Makra\n\nfunction startClicking()\n  -- Pętla klikania\nend`
+                `-- SCRIPT: Ultimate Autofarm & AutoQuest
+-- GAME: AdventureBlox
+loadstring(game:HttpGet("https://polishscript.example.com/guilib.lua"))()
+
+local OrionLib = OrionLibrary.new("PS-Autofarm v2.1.5", "Default")
+local MainSection = OrionLib:addSection("Główne Funkcje")
+
+MainSection:addToggle({
+    name = "Włącz Autofarm",
+    flag = "AutofarmEnabled",
+    callback = function(state)
+        _G.AUTOFARM = state
+        while _G.AUTOFARM do
+            print("Farmie potwory...")
+            -- Tutaj logika do znajdowania i atakowania potworów
+            wait(1)
+        end
+    end
+})`,
+                `-- SCRIPT: ESP & Aimbot v1.8 by ShadowHacker
+-- GAME: FPS Arena
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
+local ESP = { Enabled = true, Boxes = true }
+local Aimbot = { Enabled = true, FOV = 90 }
+
+RunService.RenderStepped:Connect(function()
+    if ESP.Enabled then
+        for i, v in pairs(Players:GetPlayers()) do
+            if v ~= LocalPlayer then
+                -- Logika rysowania ESP
+            end
+        end
+    end
+end)`,
+                `-- SCRIPT: Generator Waluty v3.0 (DEMO)
+-- GAME: Saga o Magnatach
+
+-- Prawdziwe generatory walut nie działają po stronie klienta.
+-- Ten kod jest jedynie symulacją interfejsu.
+local function sendRequest(username, amount)
+    print("Łączenie z serwerem PolishScript Cloud...")
+    wait(2)
+    print("Wysyłanie pakietu... Proszę czekać.")
+    wait(3)
+    print("Sukces! " .. amount .. " diamentów dodano do konta " .. username)
+end
+
+sendRequest("TwójNick", 10000)`,
+                `-- SCRIPT: Infinite Jump by UniversalScripter
+-- GAME: Uniwersalny
+local UserInputService = game:GetService("UserInputService")
+local Player = game:GetService("Players").LocalPlayer
+local enabled = false
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if input.KeyCode == Enum.KeyCode.J and not gameProcessed then
+        enabled = not enabled
+        print("Infinite Jump: " .. (enabled and "ON" or "OFF"))
+        Player.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, not enabled)
+    end
+    if enabled and input.KeyCode == Enum.KeyCode.Space then
+        Player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    end
+end)`,
+                `-- SCRIPT: SpeedHack v2.1
+-- GAME: Uniwersalny
+local Player = game:GetService("Players").LocalPlayer
+local Character = Player.Character or Player.CharacterAdded:Wait()
+local Humanoid = Character:WaitForChild("Humanoid")
+
+-- Ustawienia
+local NORMAL_SPEED = 16
+local BOOST_SPEED = 100
+local TOGGLE_KEY = Enum.KeyCode.LeftShift
+
+local isBoosted = false
+
+game:GetService("UserInputService").InputBegan:connect(function(input)
+    if input.KeyCode == TOGGLE_KEY then
+        isBoosted = not isBoosted
+        Humanoid.WalkSpeed = isBoosted and BOOST_SPEED or NORMAL_SPEED
+    end
+end)`,
+                `-- SCRIPT: Auto-Clicker & Makra
+-- GAME: Uniwersalny
+local mouse = game:GetService("Players").LocalPlayer:GetMouse()
+local clicking = false
+local delay = 0.1 -- sekundy
+
+local function startClicking()
+    clicking = true
+    while clicking do
+        mouse1click()
+        wait(delay)
+    end
+end
+
+-- Przycisk do włączenia/wyłączenia
+-- np. game:GetService("UserInputService").InputBegan...`
             ];
 
             scriptCards.forEach((card, index) => {
                 card.addEventListener('click', () => {
                     modalTitle.textContent = card.querySelector('h3').textContent;
                     modalDescription.textContent = card.querySelector('p').textContent;
-                    modalCode.textContent = sourceCodes[index] || "-- Brak kodu źródłowego do wyświetlenia.";
+                    modalCode.textContent = sourceCodes[index] || "-- Brak kodu źródłowego.";
                     modal.style.display = 'flex';
                 });
             });
@@ -832,6 +989,25 @@
                     closeModal();
                 }
             });
+
+            // Logika kopiowania kodu
+            copyCodeButton.addEventListener('click', () => {
+                const codeToCopy = modalCode.textContent;
+                const tempTextArea = document.createElement('textarea');
+                tempTextArea.value = codeToCopy;
+                document.body.appendChild(tempTextArea);
+                tempTextArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempTextArea);
+
+                // Informacja zwrotna dla użytkownika
+                const originalIcon = copyCodeButton.innerHTML;
+                copyCodeButton.innerHTML = '<i class="fa-solid fa-check"></i> Skopiowano!';
+                setTimeout(() => {
+                    copyCodeButton.innerHTML = originalIcon;
+                }, 2000);
+            });
+
 
             // Sprawdź stan zalogowania przy pierwszym załadowaniu strony
             updateLoginState();
