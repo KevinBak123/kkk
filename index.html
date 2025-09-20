@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wkrótce...</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
+
+    <style>
+        /* === Style Ogólne === */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Montserrat', sans-serif;
+            background: #111;
+            color: #fff;
+            overflow: hidden; 
+        }
+
+        /* === Kontener główny === */
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center; 
+            height: 100%;
+            text-align: center;
+            padding: 20px; /* Dodaje margines wewnętrzny, aby nic nie przyklejało się do krawędzi na małych ekranach */
+            box-sizing: border-box; /* Zapewnia, że padding nie zwiększa rozmiaru kontenera */
+        }
+
+        /* === Napis "Wkrótce..." === */
+        .coming-soon-title {
+            font-size: clamp(3.5rem, 15vw, 12rem); /* Używam clamp() dla płynnego skalowania czcionki na każdym urządzeniu */
+            font-weight: 900;
+            animation: color-flow 7s infinite linear, intro-fade-in 1.5s ease-out forwards;
+            margin: 0;
+            opacity: 0; /* Początkowo niewidoczny dla animacji wejścia */
+        }
+
+        /* Animacja zmiany kolorów */
+        @keyframes color-flow {
+            0%   { color: #ff4136; text-shadow: 0 0 15px rgba(255, 65, 54, 0.5); }
+            20%  { color: #ff851b; text-shadow: 0 0 15px rgba(255, 133, 27, 0.5); }
+            40%  { color: #ffdc00; text-shadow: 0 0 15px rgba(255, 220, 0, 0.5); }
+            60%  { color: #2ecc40; text-shadow: 0 0 15px rgba(46, 204, 64, 0.5); }
+            80%  { color: #0074d9; text-shadow: 0 0 15px rgba(0, 116, 217, 0.5); }
+            100% { color: #ff4136; text-shadow: 0 0 15px rgba(255, 65, 54, 0.5); }
+        }
+
+        /* Animacja wejścia dla napisu */
+        @keyframes intro-fade-in {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* === Kontener na ikony social media === */
+        .social-icons {
+            margin-top: 40px; /* Odstęp od napisu "Wkrótce..." */
+            display: flex;
+            gap: 30px; /* Odstęp między ikonami */
+            opacity: 0; /* Początkowo niewidoczne */
+            animation: icons-fade-in-up 1s ease-out 1s forwards; /* Animacja wejścia z opóźnieniem 1s */
+        }
+        
+        /* Animacja wejścia dla ikon */
+        @keyframes icons-fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .social-icons a {
+            color: #aaa; /* Domyślny kolor ikon */
+            font-size: clamp(2.5rem, 8vw, 3rem); /* Responsywny rozmiar ikon */
+            text-decoration: none;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        
+        /* Efekt po najechaniu myszką */
+        .social-icons a:hover {
+            transform: scale(1.2) translateY(-5px); /* Lekkie powiększenie i uniesienie */
+        }
+        
+        /* Indywidualne kolory dla ikon po najechaniu */
+        .social-icons a.tiktok:hover {
+            color: #fff;
+        }
+        
+        .social-icons a.discord:hover {
+            color: #5865F2; /* Oficjalny kolor Discord */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="coming-soon-title">Wkrótce...</h1>
+
+        <div class="social-icons">
+            <a href="https://www.tiktok.com/@xonez_" target="_blank" class="tiktok" title="Odwiedź mój TikTok">
+                <i class="fa-brands fa-tiktok"></i>
+            </a>
+            <a href="https://discord.gg/SYNUFq8E" target="_blank" class="discord" title="Dołącz do serwera Discord">
+                <i class="fa-brands fa-discord"></i>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
