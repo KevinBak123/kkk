@@ -825,8 +825,11 @@
         </div>
     </div>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    <script>
         document.addEventListener('DOMContentLoaded', function() {
             const navItems = document.querySelectorAll('.nav-item');
             const pages = document.querySelectorAll('.page');
@@ -838,6 +841,24 @@
             const scriptsGrid = document.getElementById('scriptsGrid');
             const publishToggleContainer = document.getElementById('publish-toggle-container');
             const showScriptFormButton = document.getElementById('showScriptFormButton');
+
+            // --- Firebase Setup ---
+            let db, auth;
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+            try {
+                const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+            } catch (e) {
+                console.error("Błąd inicjalizacji Firebase:", e);
+                document.body.innerHTML = '<h1>Błąd konfiguracji aplikacji. Skontaktuj się z administratorem.</h1>';
+                return;
+            }
+
+            const scriptsCollection = collection(db, `artifacts/${appId}/public/data/scripts`);
+
 
             // --- Cenzura ---
             const badWords = ['kurwa', 'chuj', 'jebać', 'pierdol', 'suka', 'cipa'];
@@ -860,11 +881,11 @@
             }
 
             // --- Logika Logowania i Wylogowywania ---
-            function updateLoginState() {
-                const user = localStorage.getItem('loggedInUser');
-                if (user) {
+            onAuthStateChanged(auth, user => {
+                const userName = localStorage.getItem('loggedInUserName');
+                if (user && userName) {
                     document.body.classList.add('logged-in');
-                    welcomeMessage.textContent = `Witaj, ${user}`;
+                    welcomeMessage.textContent = `Witaj, ${userName}`;
                     publishToggleContainer.style.display = 'block';
                 } else {
                     document.body.classList.remove('logged-in');
@@ -872,27 +893,9 @@
                     publishToggleContainer.style.display = 'none';
                     addScriptContainer.style.display = 'none';
                 }
-            }
-
-            // Przełączanie stron po kliknięciu w nawigacji
-            navItems.forEach(item => {
-                if (item.dataset.target) {
-                    item.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        setActivePage(this.dataset.target);
-                    });
-                }
             });
             
-            logoutButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                localStorage.removeItem('loggedInUser');
-                updateLoginState();
-                setActivePage('home');
-                renderScripts(); // Odśwież widok skryptów
-            });
-
-            loginForm.addEventListener('submit', function(e) {
+            loginForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const username = document.getElementById('username').value;
                 const password = document.getElementById('password').value;
@@ -904,12 +907,39 @@
                 }
                 
                 loginError.textContent = '';
-                if (username) {
-                    localStorage.setItem('loggedInUser', username);
-                    updateLoginState();
+                try {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                    localStorage.setItem('loggedInUserName', username);
                     setActivePage('home');
                     loginForm.reset();
-                    renderScripts(); // Odśwież widok skryptów
+                } catch (error) {
+                    console.error("Błąd logowania:", error);
+                    loginError.textContent = "Logowanie nie powiodło się.";
+                }
+            });
+            
+            logoutButton.addEventListener('click', async (e) => {
+                e.preventDefault();
+                try {
+                    await signOut(auth);
+                    localStorage.removeItem('loggedInUserName');
+                    setActivePage('home');
+                } catch (error) {
+                    console.error("Błąd wylogowania:", error);
+                }
+            });
+
+            // Przełączanie stron po kliknięciu w nawigacji
+            navItems.forEach(item => {
+                if (item.dataset.target) {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        setActivePage(this.dataset.target);
+                    });
                 }
             });
             
@@ -920,20 +950,11 @@
                 showScriptFormButton.textContent = isVisible ? 'Opublikuj nowy skrypt' : 'Anuluj publikację';
             });
 
-            // --- Logika dodawania i renderowania skryptów ---
-            function getScripts() {
-                return JSON.parse(localStorage.getItem('userScripts')) || [];
-            }
-
-            function saveScripts(scripts) {
-                localStorage.setItem('userScripts', JSON.stringify(scripts));
-            }
-
-            function renderScripts() {
-                const scripts = getScripts();
+            // --- Logika dodawania i renderowania skryptów z Firestore ---
+            function renderScripts(docs) {
                 scriptsGrid.innerHTML = ''; // Wyczyść siatkę
 
-                if (scripts.length === 0) {
+                if (docs.length === 0) {
                     scriptsGrid.innerHTML = `
                         <div id="noScriptsMessage">
                             <i class="fa-solid fa-ghost"></i>
@@ -942,33 +963,43 @@
                     return;
                 }
 
-                scripts.forEach(script => {
+                docs.forEach(doc => {
+                    const script = doc.data();
                     const card = document.createElement('div');
                     card.className = 'script-card';
                     card.innerHTML = `
                         <h3>${script.title}</h3>
                         <p>${script.description}</p>
-                        <div class="script-author">Autor: <strong>${script.author}</strong></div>
+                        <div class="script-author">Autor: <strong>${script.authorName}</strong></div>
                     `;
-                    // Przechowujemy pełne dane w atrybutach data-* do użycia w modalu
                     card.dataset.title = script.title;
                     card.dataset.description = script.description;
                     card.dataset.code = script.code;
-                    card.dataset.author = script.author;
+                    card.dataset.author = script.authorName;
 
                     card.addEventListener('click', () => openModalWithScript(card.dataset));
                     scriptsGrid.appendChild(card);
                 });
             }
+            
+            function listenForScripts() {
+                const q = query(scriptsCollection, orderBy('createdAt', 'desc'));
+                onSnapshot(q, (snapshot) => {
+                    renderScripts(snapshot.docs);
+                }, (error) => {
+                    console.error("Błąd podczas nasłuchiwania na skrypty:", error);
+                });
+            }
 
-            addScriptForm.addEventListener('submit', function(e) {
+            addScriptForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const title = document.getElementById('scriptTitle').value;
                 const description = document.getElementById('scriptDescription').value;
                 const code = document.getElementById('scriptCode').value;
-                const author = localStorage.getItem('loggedInUser');
+                const authorName = localStorage.getItem('loggedInUserName');
+                const authorId = auth.currentUser ? auth.currentUser.uid : null;
 
-                if (!author) {
+                if (!authorId || !authorName) {
                     alert("Musisz być zalogowany, aby dodać skrypt.");
                     return;
                 }
@@ -979,19 +1010,21 @@
                     title: censoredTitle,
                     description,
                     code,
-                    author
+                    authorName,
+                    authorId,
+                    createdAt: serverTimestamp()
                 };
 
-                const scripts = getScripts();
-                scripts.unshift(newScript); // Dodaj na początek listy
-                saveScripts(scripts);
-
-                renderScripts(); // Przerenderuj listę
-                addScriptForm.reset(); // Wyczyść formularz
-                addScriptContainer.style.display = 'none';
-                showScriptFormButton.textContent = 'Opublikuj nowy skrypt';
+                try {
+                    await addDoc(scriptsCollection, newScript);
+                    addScriptForm.reset();
+                    addScriptContainer.style.display = 'none';
+                    showScriptFormButton.textContent = 'Opublikuj nowy skrypt';
+                } catch(error) {
+                    console.error("Błąd podczas dodawania skryptu:", error);
+                    alert("Nie udało się opublikować skryptu. Spróbuj ponownie.");
+                }
             });
-
 
             // --- Logika do obsługi okna modalnego ---
             const modal = document.getElementById('scriptModal');
@@ -1038,11 +1071,9 @@
 
 
             // --- Inicjalizacja przy załadowaniu strony ---
-            updateLoginState();
-            renderScripts();
+            listenForScripts();
         });
     </script>
 
 </body>
 </html>
-
