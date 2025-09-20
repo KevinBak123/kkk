@@ -3,126 +3,542 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wkrótce...</title>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
+    <title>PolishScript Beta</title>
+
+    <!-- Import czcionek i ikon -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
-        /* === Style Ogólne === */
+        /* === Zmienne kolorów dla łatwego zarządzania motywem === */
+        :root {
+            --background-color: #121212;
+            --surface-color: #1e1e1e;
+            --primary-accent: #ff4136; /* Główny czerwony akcent */
+            --primary-accent-hover: #e03126;
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0a0;
+            --border-color: #333333;
+        }
+
+        /* === Style ogólne === */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
-            font-family: 'Montserrat', sans-serif;
-            background: #111;
-            color: #fff;
-            overflow: hidden; 
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            overflow-x: hidden;
         }
 
-        /* === Kontener główny === */
-        .container {
+        /* === Animacje === */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === Nagłówek i nawigacja === */
+        .main-header {
+            padding: 20px 0;
+            display: flex;
+            justify-content: center;
+            position: fixed;
+            width: 100%;
+            top: 20px;
+            z-index: 1000;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: rgba(30, 30, 30, 0.7);
+            padding: 10px;
+            border-radius: 50px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-logo {
+            color: var(--primary-accent);
+            font-weight: 700;
+            font-size: 1.5rem;
+            padding: 0 20px;
+            text-shadow: 0 0 5px var(--primary-accent);
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-links a.active {
+            color: white;
+            background-color: var(--primary-accent);
+        }
+
+        /* === Kontener na przełączane strony === */
+        main {
+            padding-top: 120px; /* Aby zawartość nie chowała się pod nawigacją */
+        }
+
+        .page {
+            display: none; /* Domyślnie wszystkie strony są ukryte */
+            padding: 20px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            animation: slideUp 0.7s ease-out forwards;
+        }
+
+        .page.active {
+            display: block; /* Pokazuje aktywną stronę */
+        }
+
+        /* === Styl strony głównej (#home) === */
+        #home .hero {
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        #home .hero h1 {
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin: 0;
+            background: linear-gradient(90deg, var(--primary-accent), #ff851b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        #home .hero p {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-top: 20px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* === Styl strony ze skryptami (#scripts) === */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .search-bar {
+            width: 100%;
+            max-width: 700px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+            background-color: var(--surface-color);
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .search-bar button {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            bottom: 5px;
+            width: 45px;
+            border-radius: 50%;
+            border: none;
+            background-color: var(--primary-accent);
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-bar button:hover {
+            background-color: var(--primary-accent-hover);
+        }
+
+        .scripts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .script-card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .script-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 65, 54, 0.6);
+            border-color: var(--primary-accent);
+        }
+
+        .script-card h3 {
+            margin: 0 0 10px 0;
+            color: var(--primary-accent);
+            font-size: 1.4rem;
+        }
+
+        .script-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* === Styl strony Forum === */
+        .social-links-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 50px 20px;
+            flex-wrap: wrap;
+        }
+
+        .social-card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            width: 300px;
+            height: 300px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center; 
-            height: 100%;
-            text-align: center;
-            padding: 20px; /* Dodaje margines wewnętrzny, aby nic nie przyklejało się do krawędzi na małych ekranach */
-            box-sizing: border-box; /* Zapewnia, że padding nie zwiększa rozmiaru kontenera */
-        }
-
-        /* === Napis "Wkrótce..." === */
-        .coming-soon-title {
-            font-size: clamp(3.5rem, 15vw, 12rem); /* Używam clamp() dla płynnego skalowania czcionki na każdym urządzeniu */
-            font-weight: 900;
-            animation: color-flow 7s infinite linear, intro-fade-in 1.5s ease-out forwards;
-            margin: 0;
-            opacity: 0; /* Początkowo niewidoczny dla animacji wejścia */
-        }
-
-        /* Animacja zmiany kolorów */
-        @keyframes color-flow {
-            0%   { color: #ff4136; text-shadow: 0 0 15px rgba(255, 65, 54, 0.5); }
-            20%  { color: #ff851b; text-shadow: 0 0 15px rgba(255, 133, 27, 0.5); }
-            40%  { color: #ffdc00; text-shadow: 0 0 15px rgba(255, 220, 0, 0.5); }
-            60%  { color: #2ecc40; text-shadow: 0 0 15px rgba(46, 204, 64, 0.5); }
-            80%  { color: #0074d9; text-shadow: 0 0 15px rgba(0, 116, 217, 0.5); }
-            100% { color: #ff4136; text-shadow: 0 0 15px rgba(255, 65, 54, 0.5); }
-        }
-
-        /* Animacja wejścia dla napisu */
-        @keyframes intro-fade-in {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        /* === Kontener na ikony social media === */
-        .social-icons {
-            margin-top: 40px; /* Odstęp od napisu "Wkrótce..." */
-            display: flex;
-            gap: 30px; /* Odstęp między ikonami */
-            opacity: 0; /* Początkowo niewidoczne */
-            animation: icons-fade-in-up 1s ease-out 1s forwards; /* Animacja wejścia z opóźnieniem 1s */
-        }
-        
-        /* Animacja wejścia dla ikon */
-        @keyframes icons-fade-in-up {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .social-icons a {
-            color: #aaa; /* Domyślny kolor ikon */
-            font-size: clamp(2.5rem, 8vw, 3rem); /* Responsywny rozmiar ikon */
+            align-items: center;
             text-decoration: none;
-            transition: color 0.3s ease, transform 0.3s ease;
+            transition: all 0.3s ease;
+        }
+
+        .social-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-accent);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .social-card .icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
         }
         
-        /* Efekt po najechaniu myszką */
-        .social-icons a:hover {
-            transform: scale(1.2) translateY(-5px); /* Lekkie powiększenie i uniesienie */
+        .social-card .tiktok .icon { color: #fff; }
+        .social-card .discord .icon { color: #5865F2; }
+
+        .social-card .logo-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* === Styl strony Logowania === */
+        .login-container {
+            max-width: 450px;
+            margin: 50px auto;
+            padding: 40px;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+        }
+
+        .login-container h2 {
+            text-align: center;
+            color: var(--primary-accent);
+            margin-top: 0;
+            margin-bottom: 30px;
         }
         
-        /* Indywidualne kolory dla ikon po najechaniu */
-        .social-icons a.tiktok:hover {
-            color: #fff;
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background-color: #2a2a2a;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--primary-accent);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background-color: var(--primary-accent-hover);
         }
         
-        .social-icons a.discord:hover {
-            color: #5865F2; /* Oficjalny kolor Discord */
+        /* === Styl okna modalnego (pop-up) === */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background-color: var(--surface-color);
+            margin: auto;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            position: relative;
+            animation: slideUp 0.5s;
+        }
+
+        .close-button {
+            color: var(--text-secondary);
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover { color: #fff; }
+
+        .modal-content h2 { color: var(--primary-accent); }
+
+        .code-block {
+            background: #101010;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #444;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', Courier, monospace;
+            max-height: 300px;
+            overflow-y: auto;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1 class="coming-soon-title">Wkrótce...</h1>
+    <header class="main-header">
+        <nav class="main-nav">
+            <div class="nav-logo">PS</div>
+            <div class="nav-links">
+                <a href="#" class="nav-item active" data-target="home">Strona Główna</a>
+                <a href="#" class="nav-item" data-target="scripts">Skrypty</a>
+                <a href="#" class="nav-item" data-target="forum">Społeczność</a>
+                <a href="#" class="nav-item" data-target="login">Logowanie</a>
+            </div>
+        </nav>
+    </header>
 
-        <div class="social-icons">
-            <a href="https://www.tiktok.com/@xonez_" target="_blank" class="tiktok" title="Odwiedź mój TikTok">
-                <i class="fa-brands fa-tiktok"></i>
-            </a>
-            <a href="https://discord.gg/SYNUFq8E" target="_blank" class="discord" title="Dołącz do serwera Discord">
-                <i class="fa-brands fa-discord"></i>
-            </a>
+    <main>
+        <!-- Strona Główna -->
+        <section id="home" class="page active">
+            <div class="hero">
+                <h1>Gotowy, Uruchom, Graj.</h1>
+                <p>Doświadcz największej biblioteki skryptów stworzonej dla polskiej społeczności. Znajdź, udostępnij i zdominuj grę.</p>
+            </div>
+        </section>
+
+        <!-- Strona ze Skryptami -->
+        <section id="scripts" class="page">
+            <div class="search-container">
+                <div class="search-bar">
+                    <input type="text" placeholder="Wyszukaj skrypt (np. Autofarm, ESP...)">
+                    <button><i class="fa-solid fa-magnifying-glass"></i></button>
+                </div>
+            </div>
+            <div class="scripts-grid">
+                <!-- Przykładowe karty skryptów -->
+                <div class="script-card">
+                    <h3>Ultimate Autofarm & AutoQuest</h3>
+                    <p>Zaawansowany skrypt do automatycznego farmienia i wykonywania zadań w grze "AdventureBlox". W pełni konfigurowalny.</p>
+                </div>
+                <div class="script-card">
+                    <h3>Niewykrywalny ESP & Aimbot</h3>
+                    <p>Zdominuj każdą rundę w "FPS Arena". Precyzyjny aimbot z opcją 'smooth' oraz w pełni konfigurowalny wallhack (ESP).</p>
+                </div>
+                <div class="script-card">
+                    <h3>Generator Waluty Premium</h3>
+                    <p>Skrypt wykorzystujący lukę w komunikacji z serwerem, pozwalając na dodanie waluty premium w "Saga o Magnatach".</p>
+                </div>
+                <div class="script-card">
+                    <h3>Skrypt na Nielimitowane Skoki</h3>
+                    <p>Uniwersalny skrypt, który działa w niemal każdej grze, dając możliwość nielimitowanych skoków w powietrzu.</p>
+                </div>
+                <div class="script-card">
+                    <h3>Edytor Szybkości Postaci (SpeedHack)</h3>
+                    <p>Proste narzędzie pozwalające na modyfikację prędkości poruszania się postaci. Idealne do szybkiej eksploracji mapy.</p>
+                </div>
+                <div class="script-card">
+                    <h3>Auto-Clicker & Makra</h3>
+                    <p>Zaawansowany auto-clicker z możliwością nagrywania i odtwarzania własnych sekwencji kliknięć (makr).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Strona Forum/Społeczności -->
+        <section id="forum" class="page">
+             <div class="social-links-container">
+                <a href="https://www.tiktok.com/@xonez_" target="_blank" class="social-card tiktok">
+                    <div class="icon"><i class="fa-brands fa-tiktok"></i></div>
+                    <div class="logo-text">xonez_</div>
+                </a>
+                <a href="https://discord.gg/SYNUFq8E" target="_blank" class="social-card discord">
+                    <div class="icon"><i class="fa-brands fa-discord"></i></div>
+                    <div class="logo-text">Discord</div>
+                </a>
+             </div>
+        </section>
+        
+        <!-- Strona Logowania -->
+        <section id="login" class="page">
+            <div class="login-container">
+                <h2>Zaloguj się</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="username">Imię</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Hasło</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="login-btn">Zaloguj</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Okno modalne do wyświetlania skryptów -->
+    <div id="scriptModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <p id="modalDescription"></p>
+            <h3>Kod źródłowy:</h3>
+            <pre id="modalCode" class="code-block"></pre>
         </div>
     </div>
 
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Logika do przełączania zakładek
+            const navItems = document.querySelectorAll('.nav-item');
+            const pages = document.querySelectorAll('.page');
+
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('data-target');
+                    navItems.forEach(link => link.classList.remove('active'));
+                    pages.forEach(page => page.classList.remove('active'));
+                    this.classList.add('active');
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+
+            // Logika do obsługi okna modalnego
+            const modal = document.getElementById('scriptModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalDescription = document.getElementById('modalDescription');
+            const modalCode = document.getElementById('modalCode');
+            const closeButton = document.querySelector('.close-button');
+            const scriptCards = document.querySelectorAll('.script-card');
+
+            // Przykładowe kody źródłowe
+            const sourceCodes = [
+                `loadstring(game:HttpGet("https://polishscript.example.com/guilib.lua"))()\n\n-- Logika do Autofarm...`,
+                `-- ESP & Aimbot v1.8 by ShadowHacker\n\nlocal Player = game:GetService("Players").LocalPlayer\n-- ... reszta kodu`,
+                `-- Generator Waluty v3.0\n\nprint("Łączenie z serwerem PolishScript Cloud...")\n-- ... reszta kodu`,
+                `-- Infinite Jump by UniversalScripter\n\nlocal UserInputService = game:GetService("UserInputService")\n-- ... reszta kodu`,
+                `-- SpeedHack v2.1\n\nlocal walkspeed = 100 -- Ustaw prędkość\n-- ... reszta kodu`,
+                `-- Auto-Clicker & Makra\n\nfunction startClicking()\n  -- Pętla klikania\nend`
+            ];
+
+            scriptCards.forEach((card, index) => {
+                card.addEventListener('click', () => {
+                    modalTitle.textContent = card.querySelector('h3').textContent;
+                    modalDescription.textContent = card.querySelector('p').textContent;
+                    modalCode.textContent = sourceCodes[index] || "-- Brak kodu źródłowego do wyświetlenia.";
+                    modal.style.display = 'flex';
+                });
+            });
+
+            const closeModal = () => {
+                modal.style.display = 'none';
+            };
+
+            closeButton.addEventListener('click', closeModal);
+            window.addEventListener('click', (event) => {
+                if (event.target == modal) {
+                    closeModal();
+                }
+            });
+
+            // Logika dla formularza logowania (tylko demonstracja)
+            const loginForm = document.getElementById('loginForm');
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                alert(`Witaj, ${username}! (Funkcja logowania jest w budowie)`);
+                loginForm.reset();
+            });
+        });
+    </script>
+
 </body>
 </html>
+
