@@ -366,6 +366,72 @@
             font-size: 1.2rem;
             line-height: 1.6;
         }
+        
+        /* === Styl strony z executorami === */
+        .executors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        
+        .executor-card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .executor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+        }
+        
+        .executor-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .executor-card-content {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .executor-card-content h3 {
+            margin: 0 0 10px 0;
+            color: var(--primary-accent);
+            font-size: 1.5rem;
+        }
+        
+        .executor-card-content p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+        
+        .download-btn {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            padding: 12px;
+            background-color: var(--primary-accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            background-color: var(--primary-accent-hover);
+        }
+
 
         /* === Styl strony Forum === */
         .social-links-container {
@@ -466,7 +532,7 @@
             resize: vertical;
         }
 
-        .login-btn, .submit-btn {
+        .login-btn, .submit-btn, .buy-btn {
             width: 100%;
             padding: 15px;
             border: none;
@@ -482,7 +548,7 @@
             transition: all 0.3s ease;
         }
 
-        .login-btn:hover, .submit-btn:hover {
+        .login-btn:hover, .submit-btn:hover, .buy-btn:hover:not(:disabled) {
             background-color: var(--primary-accent-hover);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(255, 65, 54, 0.5);
@@ -494,6 +560,95 @@
             font-weight: 500;
             min-height: 20px; /* Rezerwuje miejsce, aby formularz nie "skakał" */
         }
+        
+        /* === Styl strony Premium === */
+        .premium-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 30px 0;
+        }
+
+        .premium-card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .premium-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            border-color: var(--primary-accent);
+        }
+
+        .premium-card h3 {
+            font-size: 2rem;
+            color: var(--primary-accent);
+            margin: 0 0 15px 0;
+        }
+
+        .premium-card .price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .premium-card .price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+
+        .premium-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 30px 0;
+            text-align: left;
+        }
+
+        .premium-card ul li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .premium-card ul li i {
+            color: var(--primary-accent);
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .buy-btn.disabled {
+            background-color: #555;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .buy-btn.disabled:hover {
+            transform: none;
+        }
+
+        .premium-card.soon {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-style: dashed;
+            min-height: 450px; /* Utrzymuje spójną wysokość */
+        }
+
+        .premium-card.soon .soon-content {
+            color: var(--text-secondary);
+        }
+
+        .premium-card.soon .soon-content i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
 
         /* === Styl okna modalnego (pop-up) === */
         .modal {
@@ -644,6 +799,9 @@
                 width: 95%;
                 padding: 20px;
             }
+             .executors-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 480px) {
@@ -694,7 +852,7 @@
                 <a href="#" class="nav-item active" data-target="home">Strona Główna</a>
                 <a href="#" class="nav-item" data-target="scripts">Skrypty</a>
                 <a href="#" class="nav-item" data-target="forum">Społeczność</a>
-                
+                <a href="#" class="nav-item" data-target="executors">Executory</a>
                 <!-- Widoczne gdy wylogowany -->
                 <a href="#" class="nav-item logged-out-view" data-target="login">Logowanie</a>
                 
@@ -782,6 +940,52 @@
                 </a>
              </div>
         </section>
+
+        <!-- Strona z Executorami -->
+        <section id="executors" class="page">
+            <div class="executors-grid">
+                <div class="executor-card">
+                    <img src="https://i.ytimg.com/vi/3w1kU6AtMHs/maxresdefault.jpg" alt="Zenith Executor" onerror="this.onerror=null;this.src='https://placehold.co/600x300/1e1e1e/ff4136?text=Zenith';">
+                    <div class="executor-card-content">
+                        <h3>Zenith (Płatny)</h3>
+                        <p>Płatny executor premium znany z wyjątkowej stabilności i zaawansowanych funkcji. Posiada nowoczesny i intuicyjny interfejs.</p>
+                        <a href="https://discord.gg/7trPpeXJ" target="_blank" class="download-btn">Dołącz do Discorda</a>
+                    </div>
+                </div>
+                <div class="executor-card">
+                    <img src="https://cdn.dfg.com.br/itemimages/914127264-wave-mensal-roblox-executor-VLT7.webp" alt="Wave Executor" onerror="this.onerror=null;this.src='https://placehold.co/600x300/1e1e1e/ff4136?text=Wave';">
+                    <div class="executor-card-content">
+                        <h3>Wave (Płatny)</h3>
+                        <p>Płatny, lekki i szybki executor, znany z niskiego zużycia zasobów komputera. Oferuje wsparcie dla wielu popularnych skryptów.</p>
+                        <a href="https://discord.gg/5YStTzC9" target="_blank" class="download-btn">Dołącz do Discorda</a>
+                    </div>
+                </div>
+                <div class="executor-card">
+                    <img src="https://i.ytimg.com/vi/Ouk2jtKwpyw/maxresdefault.jpg" alt="Volcano Executor" onerror="this.onerror=null;this.src='https://placehold.co/600x300/1e1e1e/ff4136?text=Volcano';">
+                    <div class="executor-card-content">
+                        <h3>Volcano (Darmowy, z kluczem)</h3>
+                        <p>Darmowy, ale potężny executor, który do działania wymaga zdobycia klucza. Zapewnia kompatybilność z najnowszymi grami.</p>
+                        <a href="https://volcano.wtf" target="_blank" class="download-btn">Przejdź do strony</a>
+                    </div>
+                </div>
+                 <div class="executor-card">
+                    <img src="https://i.ytimg.com/vi/R0dE3U3XCbQ/maxresdefault.jpg" alt="Solara Executor" onerror="this.onerror=null;this.src='https://placehold.co/600x300/1e1e1e/ff4136?text=Solara';">
+                    <div class="executor-card-content">
+                        <h3>Solara (External)</h3>
+                        <p>Executor typu "external", co oznacza, że działa jako osobna aplikacja obok gry. Ceniony za wysoki poziom bezpieczeństwa.</p>
+                        <a href="https://api.getsolara.gg" target="_blank" class="download-btn">Przejdź do strony</a>
+                    </div>
+                </div>
+                 <div class="executor-card">
+                    <img src="https://i.ytimg.com/vi/yH0pOMzDpj4/maxresdefault.jpg" alt="Xeno Executor" onerror="this.onerror=null;this.src='https://placehold.co/600x300/1e1e1e/ff4136?text=Xeno';">
+                    <div class="executor-card-content">
+                        <h3>Xeno (Darmowy)</h3>
+                        <p>Całkowicie darmowy executor, który nie wymaga klucza. Dobry wybór na start, z aktywną społecznością oferującą wsparcie.</p>
+                        <a href="https://discord.gg/SSgJRenU" target="_blank" class="download-btn">Dołącz do Discorda</a>
+                    </div>
+                </div>
+            </div>
+        </section>
         
         <!-- Strona Logowania -->
         <section id="login" class="page">
@@ -804,9 +1008,23 @@
         
         <!-- Strona Premium -->
         <section id="premium" class="page">
-             <div class="placeholder-page">
-                <h2>Strefa Premium</h2>
-                <p>Wkrótce... Specjalne skrypty i unikalne funkcje będą dostępne tutaj wyłącznie dla zalogowanych użytkowników premium.</p>
+             <div class="premium-grid">
+                <div class="premium-card soon">
+                     <h3>Premium</h3>
+                     <div class="price">10 zł<span>/miesiąc</span></div>
+                     <div class="soon-content">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                        <p>Dostęp do ekskluzywnych skryptów, specjalna ranga i więcej już wkrótce!</p>
+                     </div>
+                </div>
+                <div class="premium-card soon">
+                     <h3>Premium+</h3>
+                     <div class="price">25 zł<span>/miesiąc</span></div>
+                     <div class="soon-content">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                        <p>Otrzymaj wszystkie korzyści premium oraz dostęp do unikalnych skryptów na zamówienie i wcześniejszy dostęp do nowych funkcji!</p>
+                     </div>
+                </div>
             </div>
         </section>
     </main>
@@ -825,11 +1043,7 @@
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             const navItems = document.querySelectorAll('.nav-item');
             const pages = document.querySelectorAll('.page');
@@ -841,38 +1055,6 @@
             const scriptsGrid = document.getElementById('scriptsGrid');
             const publishToggleContainer = document.getElementById('publish-toggle-container');
             const showScriptFormButton = document.getElementById('showScriptFormButton');
-
-            // --- Firebase Setup ---
-            let db, auth;
-            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
-            try {
-                const firebaseConfigStr = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
-                if (!firebaseConfigStr) {
-                    throw new Error("Zmienna konfiguracyjna Firebase (__firebase_config) nie została znaleziona.");
-                }
-                
-                const firebaseConfig = JSON.parse(firebaseConfigStr);
-                if (!firebaseConfig.apiKey) { // Prosta walidacja, czy obiekt nie jest pusty
-                    throw new Error("Konfiguracja Firebase jest niekompletna lub nieprawidłowa.");
-                }
-
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-            } catch (e) {
-                console.error("Błąd inicjalizacji Firebase:", e);
-                document.body.innerHTML = `
-                    <div style="text-align: center; padding: 50px; color: white; font-family: sans-serif;">
-                        <h1>Błąd konfiguracji aplikacji</h1>
-                        <p>Nie można połączyć się z bazą danych. Proszę odświeżyć stronę lub skontaktować się z administratorem.</p>
-                        <p style="color: #888; font-size: 0.8em;">Szczegóły błędu: ${e.message}</p>
-                    </div>`;
-                return;
-            }
-
-            const scriptsCollection = collection(db, `artifacts/${appId}/public/data/scripts`);
-
 
             // --- Cenzura ---
             const badWords = ['kurwa', 'chuj', 'jebać', 'pierdol', 'suka', 'cipa'];
@@ -895,11 +1077,11 @@
             }
 
             // --- Logika Logowania i Wylogowywania ---
-            onAuthStateChanged(auth, user => {
-                const userName = localStorage.getItem('loggedInUserName');
-                if (user && userName) {
+            function updateLoginState() {
+                const user = localStorage.getItem('loggedInUserName');
+                if (user) {
                     document.body.classList.add('logged-in');
-                    welcomeMessage.textContent = `Witaj, ${userName}`;
+                    welcomeMessage.textContent = `Witaj, ${user}`;
                     publishToggleContainer.style.display = 'block';
                 } else {
                     document.body.classList.remove('logged-in');
@@ -907,45 +1089,7 @@
                     publishToggleContainer.style.display = 'none';
                     addScriptContainer.style.display = 'none';
                 }
-            });
-            
-            loginForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-                const loginError = document.getElementById('loginError');
-
-                if (password.length < 8) {
-                    loginError.textContent = 'Hasło musi mieć co najmniej 8 znaków.';
-                    return;
-                }
-                
-                loginError.textContent = '';
-                try {
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                    localStorage.setItem('loggedInUserName', username);
-                    setActivePage('home');
-                    loginForm.reset();
-                } catch (error) {
-                    console.error("Błąd logowania:", error);
-                    loginError.textContent = "Logowanie nie powiodło się.";
-                }
-            });
-            
-            logoutButton.addEventListener('click', async (e) => {
-                e.preventDefault();
-                try {
-                    await signOut(auth);
-                    localStorage.removeItem('loggedInUserName');
-                    setActivePage('home');
-                } catch (error) {
-                    console.error("Błąd wylogowania:", error);
-                }
-            });
+            }
 
             // Przełączanie stron po kliknięciu w nawigacji
             navItems.forEach(item => {
@@ -957,6 +1101,33 @@
                 }
             });
             
+            logoutButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('loggedInUserName');
+                updateLoginState();
+                setActivePage('home');
+            });
+
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const loginError = document.getElementById('loginError');
+
+                if (password.length < 8) {
+                    loginError.textContent = 'Hasło musi mieć co najmniej 8 znaków.';
+                    return;
+                }
+                
+                loginError.textContent = '';
+                if (username) {
+                    localStorage.setItem('loggedInUserName', username);
+                    updateLoginState();
+                    setActivePage('home');
+                    loginForm.reset();
+                }
+            });
+            
             // --- Przycisk do pokazywania/ukrywania formularza ---
             showScriptFormButton.addEventListener('click', () => {
                 const isVisible = addScriptContainer.style.display === 'block';
@@ -964,11 +1135,74 @@
                 showScriptFormButton.textContent = isVisible ? 'Opublikuj nowy skrypt' : 'Anuluj publikację';
             });
 
-            // --- Logika dodawania i renderowania skryptów z Firestore ---
-            function renderScripts(docs) {
+            // --- Logika dodawania i renderowania skryptów (z localStorage) ---
+            function getScripts() {
+                const scripts = JSON.parse(localStorage.getItem('userScripts')) || [];
+                return scripts.sort((a, b) => b.createdAt - a.createdAt);
+            }
+
+            function saveScripts(scripts) {
+                localStorage.setItem('userScripts', JSON.stringify(scripts));
+            }
+            
+            function populateInitialScripts() {
+                 if (localStorage.getItem('scriptsInitialized')) return;
+
+                const defaultScripts = [
+                    {
+                        title: "Infinite Yield (Admin Commands)",
+                        description: "Jeden z najpopularniejszych skryptów admina, dający dostęp do setek komend w prawie każdej grze.",
+                        code: `loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()`,
+                        author: "EdgeIY",
+                        createdAt: Date.now() - 10000
+                    },
+                    {
+                        title: "Blox Fruits | Auto Farm & Devil Fruit Sniper",
+                        description: "Kompletny skrypt do Blox Fruits. Automatycznie farmi, zbiera owoce i wykonuje zadania za Ciebie.",
+                        code: `loadstring(game:HttpGet("https://raw.githubusercontent.com/rip_z/lib/main/BloxFruit.lua"))()`,
+                        author: "rip_z",
+                        createdAt: Date.now() - 20000
+                    },
+                     {
+                        title: "Jailbreak | Auto Rob & Auto Farm",
+                        description: "Automatycznie okrada wszystkie dostępne miejsca w Jailbreak, zarabiając dla Ciebie pieniądze.",
+                        code: `loadstring(game:HttpGet("https://pastebin.com/raw/examplejailbreak"))()`,
+                        author: "Community",
+                        createdAt: Date.now() - 30000
+                    },
+                    {
+                        title: "Adopt Me! | Auto Farm Cash",
+                        description: "Zbieraj gotówkę w Adopt Me bez wysiłku. Skrypt automatycznie wykonuje zadania i dba o zwierzaki.",
+                        code: `loadstring(game:HttpGet("https://pastebin.com/raw/exampleadoptme"))()`,
+                        author: "DevX",
+                        createdAt: Date.now() - 40000
+                    },
+                     {
+                        title: "Arsenal | Aimbot & ESP",
+                        description: "Zdobądź przewagę w Arsenal dzięki precyzyjnemu aimbotowi i funkcji widzenia przez ściany (ESP).",
+                        code: `loadstring(game:HttpGet("https://pastebin.com/raw/examplearsenal"))()`,
+                        author: "ProScripters",
+                        createdAt: Date.now() - 50000
+                    },
+                     {
+                        title: "Tower of Hell | Auto Skip Stage",
+                        description: "Denerwuje Cię trudny poziom w Tower of Hell? Ten skrypt pozwala na natychmiastowe przeskoczenie etapu.",
+                        code: `loadstring(game:HttpGet("https://pastebin.com/raw/exampletoh"))()`,
+                        author: "ObbyMaster",
+                        createdAt: Date.now() - 60000
+                    }
+                ];
+
+                saveScripts(defaultScripts);
+                localStorage.setItem('scriptsInitialized', 'true');
+            }
+
+
+            function renderScripts() {
+                const scripts = getScripts();
                 scriptsGrid.innerHTML = ''; // Wyczyść siatkę
 
-                if (docs.length === 0) {
+                if (scripts.length === 0) {
                     scriptsGrid.innerHTML = `
                         <div id="noScriptsMessage">
                             <i class="fa-solid fa-ghost"></i>
@@ -977,43 +1211,32 @@
                     return;
                 }
 
-                docs.forEach(doc => {
-                    const script = doc.data();
+                scripts.forEach(script => {
                     const card = document.createElement('div');
                     card.className = 'script-card';
                     card.innerHTML = `
                         <h3>${script.title}</h3>
                         <p>${script.description}</p>
-                        <div class="script-author">Autor: <strong>${script.authorName}</strong></div>
+                        <div class="script-author">Autor: <strong>${script.author}</strong></div>
                     `;
                     card.dataset.title = script.title;
                     card.dataset.description = script.description;
                     card.dataset.code = script.code;
-                    card.dataset.author = script.authorName;
+                    card.dataset.author = script.author;
 
                     card.addEventListener('click', () => openModalWithScript(card.dataset));
                     scriptsGrid.appendChild(card);
                 });
             }
-            
-            function listenForScripts() {
-                const q = query(scriptsCollection, orderBy('createdAt', 'desc'));
-                onSnapshot(q, (snapshot) => {
-                    renderScripts(snapshot.docs);
-                }, (error) => {
-                    console.error("Błąd podczas nasłuchiwania na skrypty:", error);
-                });
-            }
 
-            addScriptForm.addEventListener('submit', async function(e) {
+            addScriptForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const title = document.getElementById('scriptTitle').value;
                 const description = document.getElementById('scriptDescription').value;
                 const code = document.getElementById('scriptCode').value;
-                const authorName = localStorage.getItem('loggedInUserName');
-                const authorId = auth.currentUser ? auth.currentUser.uid : null;
+                const author = localStorage.getItem('loggedInUserName');
 
-                if (!authorId || !authorName) {
+                if (!author) {
                     alert("Musisz być zalogowany, aby dodać skrypt.");
                     return;
                 }
@@ -1024,21 +1247,20 @@
                     title: censoredTitle,
                     description,
                     code,
-                    authorName,
-                    authorId,
-                    createdAt: serverTimestamp()
+                    author,
+                    createdAt: Date.now() 
                 };
 
-                try {
-                    await addDoc(scriptsCollection, newScript);
-                    addScriptForm.reset();
-                    addScriptContainer.style.display = 'none';
-                    showScriptFormButton.textContent = 'Opublikuj nowy skrypt';
-                } catch(error) {
-                    console.error("Błąd podczas dodawania skryptu:", error);
-                    alert("Nie udało się opublikować skryptu. Spróbuj ponownie.");
-                }
+                const scripts = getScripts();
+                scripts.push(newScript);
+                saveScripts(scripts);
+
+                renderScripts(); 
+                addScriptForm.reset(); 
+                addScriptContainer.style.display = 'none';
+                showScriptFormButton.textContent = 'Opublikuj nowy skrypt';
             });
+
 
             // --- Logika do obsługi okna modalnego ---
             const modal = document.getElementById('scriptModal');
@@ -1085,10 +1307,11 @@
 
 
             // --- Inicjalizacja przy załadowaniu strony ---
-            listenForScripts();
+            populateInitialScripts();
+            updateLoginState();
+            renderScripts();
         });
     </script>
 
 </body>
 </html>
-
